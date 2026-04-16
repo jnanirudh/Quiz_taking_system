@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizFlow</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #111118;
+      --bg3: #18181f;
+      --bg4: #1e1e28;
+      --border: rgba(255, 255, 255, 0.07);
+      --border2: rgba(255, 255, 255, 0.12);
+      --text: #f0f0f5;
+      --text2: #9090a8;
+      --text3: #5a5a72;
+      --accent: #7c6af7;
+      --accent2: #5a49e8;
+      --accent-glow: rgba(124, 106, 247, 0.15);
+      --green: #3ecf8e;
+      --green-bg: rgba(62, 207, 142, 0.1);
+      --red: #f56565;
+      --red-bg: rgba(245, 101, 101, 0.1);
+      --amber: #f6ad55;
+      --amber-bg: rgba(246, 173, 85, 0.1);
+      --teal: #2dd4bf;
+      --teal-bg: rgba(45, 212, 191, 0.1);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 18px;
+      --transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+
+    .nav-brand {
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .nav-brand span {
+      color: var(--accent);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-user {
+      font-size: 0.8rem;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .badge-admin {
+      background: rgba(246, 173, 85, 0.15);
+      color: var(--amber);
+    }
+
+    .badge-student {
+      background: var(--accent-glow);
+      color: var(--accent);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text2);
+      border: 1px solid var(--border2);
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg3);
+      color: var(--text);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent2);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid rgba(245, 101, 101, 0.2);
+    }
+
+    .btn-danger:hover {
+      background: rgba(245, 101, 101, 0.18);
+    }
+
+    .btn-success {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid rgba(62, 207, 142, 0.2);
+    }
+
+    .btn-success:hover {
+      background: rgba(62, 207, 142, 0.18);
+    }
+
+    .btn-teal {
+      background: var(--teal-bg);
+      color: var(--teal);
+      border: 1px solid rgba(45, 212, 191, 0.2);
+    }
+
+    .btn-teal:hover {
+      background: rgba(45, 212, 191, 0.18);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn-sm {
+      padding: 5px 12px;
+      font-size: 0.8rem;
+    }
+
+    .btn-lg {
+      padding: 12px 28px;
+      font-size: 1rem;
+    }
+
+    .w-full {
+      width: 100%;
+    }
+
+    .page {
+      display: none;
+      animation: fadeUp 0.25s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+    }
+
+    .container-lg {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+    }
+
+    .auth-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: radial-gradient(ellipse at 60% 30%, rgba(124, 106, 247, 0.06) 0%, transparent 70%);
+    }
+
+    .auth-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .auth-logo h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .auth-logo h1 span {
+      color: var(--accent);
+    }
+
+    .auth-logo p {
+      color: var(--text2);
+      font-size: 0.875rem;
+      margin-top: 4px;
+    }
+
+    .role-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 1.2rem;
+    }
+
+    .role-btn {
+      padding: 14px 10px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border2);
+      background: var(--bg3);
+      cursor: pointer;
+      text-align: center;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .role-btn.sel-student {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .role-btn.sel-admin {
+      border-color: var(--amber);
+      background: var(--amber-bg);
+    }
+
+    .role-icon {
+      font-size: 1.4rem;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .role-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .role-desc {
+      font-size: 0.72rem;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .admin-pin-section {
+      background: var(--amber-bg);
+      border: 1px solid rgba(246, 173, 85, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      margin-bottom: 1.2rem;
+      animation: fadeUp 0.2s ease;
+    }
+
+    .pin-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--amber);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .pin-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .pin-input {
+      width: 52px;
+      height: 58px;
+      text-align: center;
+      font-size: 1.4rem;
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      background: var(--bg3);
+      border: 1.5px solid rgba(246, 173, 85, 0.3);
+      border-radius: var(--radius-sm);
+      color: var(--amber);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .pin-input:focus {
+      border-color: var(--amber);
+      background: var(--bg4);
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text2);
+      margin-bottom: 6px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      background: var(--bg4);
+    }
+
+    .form-group select option {
+      background: var(--bg3);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--text2);
+    }
+
+    .auth-switch a {
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    .error-msg {
+      background: var(--red-bg);
+      border: 1px solid rgba(245, 101, 101, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.875rem;
+      color: var(--red);
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .success-msg {
+      background: var(--green-bg);
+      border: 1px solid rgba(62, 207, 142, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.875rem;
+      color: var(--green);
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .page-header p {
+      color: var(--text2);
+      margin-top: 4px;
+    }
+
+    .page-hr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .page-hr h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--bg3);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--text2);
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      background: var(--bg);
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeUp 0.2s ease;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    thead {
+      background: var(--bg3);
+    }
+
+    th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 500;
+      color: var(--text2);
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 12px 14px;
+      border-top: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .quiz-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quiz-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), #a78bfa);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .quiz-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .quiz-card:hover::before {
+      opacity: 1;
+    }
+
+    .quiz-card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .prog-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--bg3);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #a78bfa);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .q-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .q-num {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .q-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .option:hover {
+      border-color: var(--border2);
+      background: var(--bg4);
+    }
+
+    .option.selected {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .opt-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border2);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .option.selected .opt-dot {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .option.selected .opt-dot::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .quiz-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+
+    .proctor-bar {
+      background: rgba(45, 212, 191, 0.08);
+      border: 1px solid rgba(45, 212, 191, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.2rem;
+      font-size: 0.82rem;
+      color: var(--teal);
+    }
+
+    .proctor-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    .warn-banner {
+      background: var(--red-bg);
+      border: 1px solid rgba(245, 101, 101, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      color: var(--red);
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    .result-hero {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.5rem;
+    }
+
+    .score-ring {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--accent-glow);
+      border: 3px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      flex-direction: column;
+    }
+
+    .score-num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .score-lbl {
+      font-size: 0.7rem;
+      color: var(--text2);
+    }
+
+    .upload-zone {
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      background: var(--bg3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .upload-zone input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .gen-log {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text2);
+      max-height: 200px;
+      overflow-y: auto;
+      line-height: 1.9;
+    }
+
+    .log-ok {
+      color: var(--green);
+    }
+
+    .log-err {
+      color: var(--red);
+    }
+
+    .log-info {
+      color: var(--teal);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem;
+      gap: 12px;
+      color: var(--text2);
+    }
+
+    .modal-bd {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .modal h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .modal p {
+      color: var(--text2);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text2);
+    }
+
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.4;
+    }
+
+    .empty h3 {
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ti {
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+      max-width: 340px;
+    }
+
+    .ti.success {
+      background: #1a3a28;
+      color: var(--green);
+      border: 1px solid rgba(62, 207, 142, 0.3);
+    }
+
+    .ti.error {
+      background: #3a1a1a;
+      color: var(--red);
+      border: 1px solid rgba(245, 101, 101, 0.3);
+    }
+
+    .ti.info {
+      background: #1a1a3a;
+      color: #a78bfa;
+      border: 1px solid rgba(124, 106, 247, 0.3);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text2);
+    }
+
+    .chip.g {
+      background: var(--green-bg);
+      color: var(--green);
+      border-color: rgba(62, 207, 142, 0.2);
+    }
+
+    .chip.a {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: rgba(124, 106, 247, 0.2);
+    }
+
+    .chip.am {
+      background: var(--amber-bg);
+      color: var(--amber);
+      border-color: rgba(246, 173, 85, 0.2);
+    }
+
+    .chip.t {
+      background: var(--teal-bg);
+      color: var(--teal);
+      border-color: rgba(45, 212, 191, 0.2);
+    }
+
+    .chip.r {
+      background: var(--red-bg);
+      color: var(--red);
+      border-color: rgba(245, 101, 101, 0.2);
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .gap2 {
+      gap: 8px;
+    }
+
+    .gap3 {
+      gap: 12px;
+    }
+
+    .aic {
+      align-items: center;
+    }
+
+    .jb {
+      justify-content: space-between;
+    }
+
+    .fw {
+      flex-wrap: wrap;
+    }
+
+    .ig {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ig input {
+      flex: 1;
+    }
+
+    .sm {
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+
+    @media(max-width:600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .container,
+      .container-lg {
+        padding: 1.5rem 1rem;
+      }
+
+      .auth-card {
+        padding: 1.5rem;
+      }
+
+      .tab {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="toast"></div>
+
+  <nav id="main-nav" style="display:none;">
+    <div class="nav-brand" onclick="goHome()">Quiz<span>Flow</span></div>
+    <div class="nav-right">
+      <div class="nav-user" id="nav-user"></div>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Sign out</button>
+    </div>
+  </nav>
+
+  <!-- LOGIN -->
+  <div id="page-login" class="page active">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <h1>Quiz<span>Flow</span></h1>
+          <p>Sign in to continue</p>
+        </div>
+        <div class="error-msg" id="login-err"></div>
+        <div class="form-group"><label>Username</label><input type="text" id="lu" placeholder="Username"
+            autocomplete="username"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="lp" placeholder="Password"
+            autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="btn btn-primary w-full btn-lg" id="login-btn" onclick="doLogin()">Sign In</button>
+        <div class="auth-switch">No account? <a onclick="navigate('register')">Register here</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="page-register" class="page">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <h1>Quiz<span>Flow</span></h1>
+          <p>Create your account</p>
+        </div>
+        <div class="error-msg" id="reg-err"></div>
+        <div class="success-msg" id="reg-ok"></div>
+
+        <div
+          style="font-size:0.78rem;font-weight:500;color:var(--text2);letter-spacing:0.03em;text-transform:uppercase;margin-bottom:8px;">
+          I am a…</div>
+        <div class="role-selector">
+          <div class="role-btn sel-student" id="rbS" onclick="selRole('STUDENT')">
+            <span class="role-icon">🎓</span>
+            <div class="role-name" style="color:var(--accent);">Student</div>
+            <div class="role-desc">Take quizzes & view results</div>
+          </div>
+          <div class="role-btn" id="rbA" onclick="selRole('ADMIN')">
+            <span class="role-icon">🛡️</span>
+            <div class="role-name" style="color:var(--text2);">Admin</div>
+            <div class="role-desc">Manage questions & quizzes</div>
+          </div>
+        </div>
+
+        <div class="admin-pin-section" id="pin-section" style="display:none;">
+          <div class="pin-label">🔐 Admin Access Code</div>
+          <div class="pin-row">
+            <input class="pin-input" type="password" maxlength="1" id="p0" oninput="pinStep(0)"
+              onkeydown="pinBack(event,0)">
+            <input class="pin-input" type="password" maxlength="1" id="p1" oninput="pinStep(1)"
+              onkeydown="pinBack(event,1)">
+            <input class="pin-input" type="password" maxlength="1" id="p2" oninput="pinStep(2)"
+              onkeydown="pinBack(event,2)">
+            <input class="pin-input" type="password" maxlength="1" id="p3" oninput="pinStep(3)"
+              onkeydown="pinBack(event,3)">
+          </div>
+          <div style="margin-top:8px;font-size:0.72rem;color:var(--text3);text-align:center;">Enter the 4-digit code
+            shared with all administrators</div>
+        </div>
+
+        <div class="form-group"><label>Username</label><input type="text" id="ru" placeholder="Choose a username"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="re" placeholder="your@email.com"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="rp" placeholder="Create a password">
+        </div>
+        <button class="btn btn-primary w-full btn-lg" id="reg-btn" onclick="doRegister()">Create Account</button>
+        <div class="auth-switch">Already have an account? <a onclick="navigate('login')">Sign in</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDENT DASHBOARD -->
+  <div id="page-dashboard" class="page">
+    <div class="container">
+      <div class="page-header">
+        <h1>Available Quizzes</h1>
+        <p>Select a quiz to begin</p>
+      </div>
+      <div id="ql-loading" class="loading-center" style="display:none;">
+        <div class="spinner"></div>&nbsp;Discovering quizzes…
+      </div>
+      <div id="ql-empty" class="empty" style="display:none;">
+        <div class="empty-icon">📝</div>
+        <h3>No quizzes yet</h3>
+        <p>Check back later.</p>
+      </div>
+      <div class="card-grid" id="quiz-cards"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ TAKING -->
+  <div id="page-quiz" class="page">
+    <div class="container" style="max-width:680px;">
+      <div id="quiz-loading" class="loading-center">
+        <div class="spinner"></div>&nbsp;Loading quiz…
+      </div>
+      <div id="quiz-content" style="display:none;">
+        <div class="proctor-bar" id="proctor-bar" style="display:none;">
+          <div class="proctor-dot"></div>
+          <span>Proctoring active — session is monitored</span>
+          <span id="warn-count" style="margin-left:auto;"></span>
+        </div>
+        <div class="warn-banner" id="warn-banner"></div>
+        <div class="flex aic jb" style="margin-bottom:6px;">
+          <span class="sm" id="q-title-lbl"></span>
+          <span class="sm" id="q-prog-lbl"></span>
+        </div>
+        <div class="flex aic gap3" style="margin-bottom:2rem;">
+          <div class="prog-bar">
+            <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+          </div>
+        </div>
+        <div id="question-area"></div>
+        <div class="quiz-nav">
+          <button class="btn btn-ghost" id="btn-prev" onclick="prevQ()">← Previous</button>
+          <span class="sm" id="ans-info"></span>
+          <button class="btn btn-primary" id="btn-next" onclick="nextQ()">Next →</button>
+        </div>
+        <div style="text-align:center;margin-top:1.5rem;">
+          <button class="btn btn-success btn-lg" id="btn-submit" onclick="confirmSubmit()" style="display:none;">Submit
+            Quiz</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="page-result" class="page">
+    <div class="container" style="max-width:560px;">
+      <div class="result-hero">
+        <div class="score-ring"><span class="score-num" id="res-score">0</span><span class="score-lbl">SCORE</span>
+        </div>
+        <h2 id="res-msg">Quiz Complete!</h2>
+        <p id="res-sub"></p>
+      </div>
+      <div class="flex gap2 jb fw" style="margin-top:1rem;">
+        <button class="btn btn-ghost" onclick="goHome()">← Dashboard</button>
+        <button class="btn btn-ghost" onclick="navigate('reports')">View Reports</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDENT REPORTS -->
+  <div id="page-reports" class="page">
+    <div class="container">
+      <div class="page-hr">
+        <h1>My Reports</h1><button class="btn btn-ghost btn-sm" onclick="loadReports()">↻ Refresh</button>
+      </div>
+      <div id="rep-loading" class="loading-center" style="display:none;">
+        <div class="spinner"></div>
+      </div>
+      <div id="rep-empty" class="empty" style="display:none;">
+        <div class="empty-icon">📊</div>
+        <h3>No reports yet</h3>
+        <p>Take a quiz first.</p>
+      </div>
+      <div class="table-wrap" id="rep-wrap" style="display:none;">
+        <table>
+          <thead>
+            <tr>
+              <th>Quiz ID</th>
+              <th>Score</th>
+              <th>Report ID</th>
+            </tr>
+          </thead>
+          <tbody id="rep-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="page-admin" class="page">
+    <div class="container-lg">
+      <div class="page-hr">
+        <h1>Admin Panel</h1><span class="badge badge-admin">Admin</span>
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('t-questions',this)">Question Bank</div>
+        <div class="tab" onclick="switchTab('t-quiz',this)">Create Quiz</div>
+        <div class="tab" onclick="switchTab('t-ai',this)">🤖 AI Generator</div>
+        <div class="tab" onclick="switchTab('t-reports',this)">Reports</div>
+      </div>
+
+      <!-- QUESTION BANK -->
+      <div class="tab-content active" id="t-questions">
+        <div class="page-hr">
+          <div class="flex gap2 aic fw">
+            <input type="text" id="subj-filter" placeholder="Filter by subject…" oninput="filterQ()"
+              style="padding:8px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:0.85rem;width:200px;outline:none;">
+            <button class="btn btn-ghost btn-sm" onclick="loadAdminQ()">↻ Refresh</button>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="toggleAddForm()">+ Add Question</button>
+        </div>
+        <div id="add-form" class="card" style="display:none;margin-bottom:1.5rem;">
+          <h3 style="margin-bottom:1.2rem;font-size:1rem;">New Question</h3>
+          <div class="form-group"><label>Question Text</label><textarea id="aq-t" rows="2"
+              style="resize:vertical;"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label>Subject</label><input type="text" id="aq-s" placeholder="e.g. Java"></div>
+            <div class="form-group"><label>Marks</label><input type="number" id="aq-m" value="1" min="1"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Option 1</label><input type="text" id="aq-o1"></div>
+            <div class="form-group"><label>Option 2</label><input type="text" id="aq-o2"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Option 3</label><input type="text" id="aq-o3"></div>
+            <div class="form-group"><label>Option 4</label><input type="text" id="aq-o4"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Correct Answer (exact text)</label><input type="text" id="aq-ans"></div>
+            <div class="form-group"><label>Difficulty</label><select id="aq-d">
+                <option>Easy</option>
+                <option>Medium</option>
+                <option>Hard</option>
+              </select></div>
+          </div>
+          <div class="flex gap2">
+            <button class="btn btn-primary" onclick="addQuestion()">Save Question</button>
+            <button class="btn btn-ghost" onclick="toggleAddForm()">Cancel</button>
+          </div>
+        </div>
+        <div id="qb-loading" class="loading-center" style="display:none;">
+          <div class="spinner"></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Question</th>
+                <th>Subject</th>
+                <th>Marks</th>
+                <th>Difficulty</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="qb-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CREATE QUIZ -->
+      <div class="tab-content" id="t-quiz">
+        <div style="max-width:480px;">
+          <div class="card">
+            <h3 style="margin-bottom:1.2rem;">Create New Quiz</h3>
+            <div class="error-msg" id="cq-err"></div>
+            <div class="success-msg" id="cq-ok"></div>
+            <div class="form-group"><label>Quiz Title</label><input type="text" id="cq-title"
+                placeholder="e.g. Java Basics Quiz"></div>
+            <div class="form-group"><label>Subject</label><input type="text" id="cq-subj" placeholder="e.g. Java"></div>
+            <div class="form-group"><label>Number of Questions</label><input type="number" id="cq-num" value="5"
+                min="1"></div>
+            <button class="btn btn-primary btn-lg w-full" onclick="createQuiz()">Create Quiz</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI GENERATOR -->
+      <div class="tab-content" id="t-ai">
+        <div style="max-width:640px;">
+          <div class="card" style="margin-bottom:1.2rem;">
+            <div class="flex aic gap2" style="margin-bottom:1rem;">
+              <span style="font-size:1.3rem;">🤖</span>
+              <div>
+                <h3 style="font-size:1rem;margin:0;">AI Question Generator</h3>
+                <p class="sm" style="margin-top:2px;">Upload a PDF — the local LLM extracts questions and pushes them
+                  directly into the Question Bank.</p>
+              </div>
+            </div>
+            <div class="error-msg" id="gen-err"></div>
+            <div class="success-msg" id="gen-ok"></div>
+
+            <div class="upload-zone" id="upload-zone" ondragover="dragOver(event)" ondragleave="dragLeave(event)"
+              ondrop="dropFile(event)">
+              <input type="file" accept=".pdf" id="pdf-input" onchange="fileChosen(event)">
+              <div style="font-size:2rem;margin-bottom:8px;opacity:0.6;">📄</div>
+              <p style="color:var(--text2);font-size:0.875rem;">Drag &amp; drop a PDF here, or click to browse</p>
+              <div id="file-display"
+                style="display:none;color:var(--accent);font-weight:500;margin-top:8px;font-size:0.9rem;"></div>
+            </div>
+
+            <div class="form-row" style="margin-top:1.2rem;">
+              <div class="form-group" style="margin:0;"><label>Subject Label</label><input type="text" id="gen-subj"
+                  placeholder="e.g. Java"></div>
+              <div class="form-group" style="margin:0;"><label>Number of Questions</label><input type="number"
+                  id="gen-num" value="5" min="1" max="50"></div>
+            </div>
+            <div class="form-group" style="margin-top:1rem;"><label>Difficulty</label>
+              <select id="gen-diff">
+                <option>Easy</option>
+                <option selected>Medium</option>
+                <option>Hard</option>
+              </select>
+            </div>
+            <button class="btn btn-teal btn-lg w-full" id="gen-btn" style="margin-top:0.5rem;"
+              onclick="generateQuestions()">Generate &amp; Import Questions</button>
+          </div>
+
+          <div id="gen-log-wrap" style="display:none;">
+            <div class="flex aic jb" style="margin-bottom:8px;">
+              <span class="sm">Generation Log</span>
+              <button class="btn btn-ghost btn-sm" onclick="clearLog()">Clear</button>
+            </div>
+            <div class="gen-log" id="gen-log"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="tab-content" id="t-reports">
+        <div class="form-row" style="max-width:620px;margin-bottom:1.5rem;">
+          <div class="form-group" style="margin:0;"><label>By Student Name</label>
+            <div class="ig"><input type="text" id="ar-student" placeholder="username"><button
+                class="btn btn-primary btn-sm" onclick="adminReport('student')">Search</button></div>
+          </div>
+          <div class="form-group" style="margin:0;"><label>By Quiz ID</label>
+            <div class="ig"><input type="number" id="ar-quiz" placeholder="Quiz ID"><button
+                class="btn btn-primary btn-sm" onclick="adminReport('quiz')">Search</button></div>
+          </div>
+        </div>
+        <div id="ar-loading" class="loading-center" style="display:none;">
+          <div class="spinner"></div>
+        </div>
+        <div id="ar-empty" class="empty" style="display:none;">
+          <div class="empty-icon">🔍</div>
+          <h3>No results</h3>
+          <p>Search above.</p>
+        </div>
+        <div class="table-wrap" id="ar-wrap" style="display:none;">
+          <table>
+            <thead>
+              <tr>
+                <th>Report ID</th>
+                <th>Quiz ID</th>
+                <th>Student</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody id="ar-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT MODAL -->
+  <div id="submit-modal" class="modal-bd" style="display:none;">
+    <div class="modal">
+      <h2>Submit Quiz?</h2>
+      <p id="modal-msg">You won't be able to change your answers.</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal()">Go Back</button>
+        <button class="btn btn-success" onclick="submitQuiz()">Yes, Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── CONFIG ──────────────────────────────────────────────
+    const AUTH = 'http://localhost:8080';  // Auth Service (Java)
+    const QUESTION = 'http://localhost:8081';  // Question Service (Java)
+    const QUIZ_SVC = 'http://localhost:8082';  // Quiz Service (Java)
+    const REPORT = 'http://localhost:8083';  // Report Service (Java)
+    const PROCTOR = 'http://localhost:8000';  // ProctoringMode (FastAPI) - CHANGED
+    const GENAI = 'http://localhost:8010';  // question_miner_service (FastAPI) - CHANGED
+
+    // ⬇ Change this to match your backend's expected admin code
+    const ADMIN_CODE = '1234';
+
+    // ── STATE ───────────────────────────────────────────────
+    let S = {
+      token: localStorage.getItem('token') || null,
+      refresh: localStorage.getItem('refresh') || null,
+      username: localStorage.getItem('username') || null,
+      role: localStorage.getItem('role') || null,
+    };
+    let QS = { id: null, questions: [], answers: {}, idx: 0, title: '', sessionId: null, warns: 0 };
+    let allQ = [];
+    let selectedRole = 'STUDENT';
+    let pdfFile = null;
+
+    // ── ROUTING ─────────────────────────────────────────────
+    function navigate(page, data) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      const noNav = ['login', 'register'];
+      document.getElementById('main-nav').style.display = noNav.includes(page) ? 'none' : 'flex';
+      if (page === 'dashboard') { if (S.role === 'ADMIN') { navigate('admin'); return; } loadQuizzes(); }
+      if (page === 'admin') loadAdminQ();
+      if (page === 'quiz' && data) startQuiz(data);
+      if (page === 'reports') loadReports();
+      updateNav();
+    }
+    function goHome() { navigate(S.role === 'ADMIN' ? 'admin' : 'dashboard'); }
+    function updateNav() {
+      const el = document.getElementById('nav-user');
+      if (!S.username) { el.innerHTML = ''; return; }
+      const bc = S.role === 'ADMIN' ? 'badge-admin' : 'badge-student';
+      el.innerHTML = `<span>${S.username}</span><span class="badge ${bc}">${S.role}</span>`;
+    }
+
+    // ── HTTP ─────────────────────────────────────────────────
+    async function api(url, opts = {}) {
+      const h = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+      if (S.token) h['Authorization'] = 'Bearer ' + S.token;
+      try { return await fetch(url, { ...opts, headers: h }); }
+      catch { toast('Network error — is the backend running?', 'error'); throw new Error('net'); }
+    }
+    async function apiJ(url, opts = {}) {
+      const r = await api(url, opts);
+      let b; try { b = await r.json(); } catch { b = null; }
+      return { status: r.status, ok: r.ok, body: b };
+    }
+    async function apiUpload(url, fd) {
+      const h = {};
+      if (S.token) h['Authorization'] = 'Bearer ' + S.token;
+      try { return await fetch(url, { method: 'POST', headers: h, body: fd }); }
+      catch { toast('Network error.', 'error'); throw new Error('net'); }
+    }
+
+    // ── TOAST ────────────────────────────────────────────────
+    function toast(msg, type = 'info') {
+      const el = document.createElement('div');
+      el.className = `ti ${type}`; el.textContent = msg;
+      document.getElementById('toast').appendChild(el);
+      setTimeout(() => el.remove(), 3800);
+    }
+
+    // ── ROLE SELECTOR & PIN ──────────────────────────────────
+    function selRole(role) {
+      const selectedRole_temp = role;  // Just track the selection
+      const sb = document.getElementById('rbS'), ab = document.getElementById('rbA');
+      sb.className = 'role-btn' + (role === 'STUDENT' ? ' sel-student' : '');
+      sb.querySelector('.role-name').style.color = role === 'STUDENT' ? 'var(--accent)' : 'var(--text2)';
+      ab.className = 'role-btn' + (role === 'ADMIN' ? ' sel-admin' : '');
+      ab.querySelector('.role-name').style.color = role === 'ADMIN' ? 'var(--amber)' : 'var(--text2)';
+      document.getElementById('pin-section').style.display = role === 'ADMIN' ? 'block' : 'none';
+      if (role === 'ADMIN') document.getElementById('p0').focus();
+      window.selectedRole = role;  // Store globally
+    }
+    function pinStep(i) {
+      const inp = document.getElementById('p' + i);
+      if (inp.value.length === 1 && i < 3) document.getElementById('p' + (i + 1)).focus();
+    }
+    function pinBack(e, i) {
+      if (e.key === 'Backspace' && !document.getElementById('p' + i).value && i > 0)
+        document.getElementById('p' + (i - 1)).focus();
+    }
+    function getPin() { return [0, 1, 2, 3].map(i => document.getElementById('p' + i).value).join(''); }
+
+    // ── AUTH ─────────────────────────────────────────────────
+    async function doLogin() {
+      const u = document.getElementById('lu').value.trim(), p = document.getElementById('lp').value;
+      const err = document.getElementById('login-err'), btn = document.getElementById('login-btn');
+      err.style.display = 'none';
+      if (!u || !p) { showErr(err, 'Please fill in all fields.'); return; }
+      btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>&nbsp;Signing in…';
+      const { status, body } = await apiJ(`${AUTH}/auth/login`, { method: 'POST', body: JSON.stringify({ username: u, password: p }) });
+      btn.disabled = false; btn.textContent = 'Sign In';
+      if (status !== 200) { showErr(err, body?.message || 'Invalid credentials.'); return; }
+      saveSession(body.data);
+      toast(`Welcome back, ${body.data.username}!`, 'success');
+      navigate('dashboard');
+    }
+
+    async function doRegister() {
+      const u = document.getElementById('ru').value.trim(), e = document.getElementById('re').value.trim(), p = document.getElementById('rp').value;
+      const err = document.getElementById('reg-err'), ok = document.getElementById('reg-ok'), btn = document.getElementById('reg-btn');
+      err.style.display = 'none'; ok.style.display = 'none';
+      if (!u || !e || !p) { showErr(err, 'Please fill in all fields.'); return; }
+      if (window.selectedRole === 'ADMIN') {
+        const pin = getPin();
+        if (pin.length < 4) { showErr(err, 'Enter the 4-digit admin access code.'); return; }
+        if (pin !== ADMIN_CODE) { showErr(err, 'Invalid admin access code. Contact your administrator.'); return; }
+      }
+      btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>&nbsp;Creating…';
+      const { status, body } = await apiJ(`${AUTH}/auth/register`, { method: 'POST', body: JSON.stringify({ username: u, email: e, password: p, role: window.selectedRole }) });
+      btn.disabled = false; btn.textContent = 'Create Account';
+      if (status === 201) { ok.textContent = 'Account created! Redirecting…'; ok.style.display = 'block'; setTimeout(() => navigate('login'), 1800); }
+      else showErr(err, body?.message || 'Registration failed.');
+    }
+
+    function saveSession(d) {
+      S.token = d.accessToken; S.refresh = d.refreshToken; S.username = d.username; S.role = d.role;
+      localStorage.setItem('token', d.accessToken); localStorage.setItem('refresh', d.refreshToken);
+      localStorage.setItem('username', d.username); localStorage.setItem('role', d.role);
+    }
+
+    function logout() {
+      api(`${AUTH}/auth/logout`, { method: 'POST' });
+      ['token', 'refresh', 'username', 'role'].forEach(k => localStorage.removeItem(k));
+      Object.assign(S, { token: null, refresh: null, username: null, role: null });
+      navigate('login'); toast('Signed out.', 'info');
+    }
+    function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
+
+    // ── QUIZ LIST ────────────────────────────────────────────
+    async function loadQuizzes() {
+      const cards = document.getElementById('quiz-cards'), loading = document.getElementById('ql-loading'), empty = document.getElementById('ql-empty');
+      cards.innerHTML = ''; loading.style.display = 'flex'; empty.style.display = 'none';
+      const found = [];
+      await Promise.all(Array.from({ length: 20 }, (_, i) => i + 1).map(async id => {
+        try {
+          const r = await fetch(`${QUIZ_SVC}/quiz/get/${id}?studentName=${encodeURIComponent(S.username || 'guest')}`, { headers: { 'Authorization': 'Bearer ' + S.token } });
+          if (r.ok) { const qs = await r.json(); if (Array.isArray(qs) && qs.length) found.push({ id, questions: qs }); }
+        } catch { }
+      }));
+      loading.style.display = 'none';
+      if (!found.length) { empty.style.display = 'block'; return; }
+      found.sort((a, b) => a.id - b.id);
+      found.forEach(({ id, questions }) => {
+        const d = document.createElement('div'); d.className = 'quiz-card';
+        d.innerHTML = `<h3>Quiz #${id}</h3><div style="font-size:0.8rem;color:var(--text3);margin-top:6px;">📝 ${questions.length} questions</div><div style="margin-top:1rem;"><span class="chip a">Start Quiz →</span></div>`;
+        d.onclick = () => navigate('quiz', { id, questions, title: `Quiz #${id}` });
+        cards.appendChild(d);
+      });
+    }
+
+    // ── QUIZ TAKING ──────────────────────────────────────────
+    async function startQuiz(data) {
+      QS = { id: data.id, questions: data.questions, answers: {}, idx: 0, title: data.title, sessionId: null, warns: 0 };
+      document.getElementById('quiz-loading').style.display = 'none';
+      document.getElementById('quiz-content').style.display = 'block';
+      document.getElementById('q-title-lbl').textContent = data.title;
+      await startProctor(data.id);
+      renderQ();
+    }
+
+    async function startProctor(quizId) {
+      try {
+        const r = await api(`${PROCTOR}/proctor/start`, { method: 'POST', body: JSON.stringify({ quiz_id: quizId, student_name: S.username }) });
+        if (r.ok) {
+          const d = await r.json();
+          QS.sessionId = d.session_id || d.sessionId || null;
+          document.getElementById('proctor-bar').style.display = 'flex';
+          document.addEventListener('visibilitychange', onVisChange);
+          window.addEventListener('blur', onBlur);
+        }
+      } catch { }
+    }
+
+    async function stopProctor() {
+      if (!QS.sessionId) return;
+      document.removeEventListener('visibilitychange', onVisChange);
+      window.removeEventListener('blur', onBlur);
+      try { await api(`${PROCTOR}/proctor/stop`, { method: 'POST', body: JSON.stringify({ session_id: QS.sessionId }) }); } catch { }
+    }
+
+    async function proctorEvent(type) {
+      if (!QS.sessionId) return;
+      try {
+        await api(`${PROCTOR}/proctor/event`, { method: 'POST', body: JSON.stringify({ session_id: QS.sessionId, event: type, student_name: S.username }) });
+        QS.warns++;
+        document.getElementById('warn-count').innerHTML = `<span class="chip r">⚠ ${QS.warns} warning${QS.warns > 1 ? 's' : ''}</span>`;
+        const b = document.getElementById('warn-banner');
+        b.textContent = `⚠ Warning: ${type.replace(/_/g, ' ')}. This has been logged.`;
+        b.style.display = 'block';
+        setTimeout(() => b.style.display = 'none', 5000);
+      } catch { }
+    }
+
+    function onVisChange() { if (document.hidden) proctorEvent('tab_switched'); }
+    function onBlur() { proctorEvent('window_lost_focus'); }
+
+    function renderQ() {
+      const { questions, idx, answers } = QS, q = questions[idx], total = questions.length, answered = Object.keys(answers).length;
+      const isLast = idx === total - 1;
+      document.getElementById('q-prog-lbl').textContent = `${idx + 1} / ${total}`;
+      document.getElementById('prog-fill').style.width = `${((idx + 1) / total) * 100}%`;
+      document.getElementById('ans-info').textContent = `${answered} / ${total} answered`;
+      document.getElementById('btn-next').style.display = isLast ? 'none' : 'inline-flex';
+      document.getElementById('btn-submit').style.display = answered === total ? 'inline-flex' : 'none';
+      document.getElementById('btn-prev').style.display = idx === 0 ? 'none' : 'inline-flex';
+      const opts = [q.option1, q.option2, q.option3, q.option4].filter(Boolean), sel = answers[q.id];
+      document.getElementById('question-area').innerHTML = `
+    <div class="q-card">
+      <div class="q-num">Question ${idx + 1}</div>
+      <div class="q-title">${esc(q.questionTitle)}</div>
+      <div class="options">${opts.map(o => `
+        <div class="option ${sel === o ? 'selected' : ''}" onclick="pickOpt(${q.id},'${escA(o)}',this)">
+          <div class="opt-dot"></div><span>${esc(o)}</span>
+        </div>`).join('')}</div>
+    </div>`;
+    }
+
+    function pickOpt(qId, val, el) {
+      QS.answers[qId] = val;
+      el.closest('.options').querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      const ans = Object.keys(QS.answers).length, tot = QS.questions.length;
+      document.getElementById('ans-info').textContent = `${ans} / ${tot} answered`;
+      if (ans === tot) document.getElementById('btn-submit').style.display = 'inline-flex';
+    }
+
+    function nextQ() { if (QS.idx < QS.questions.length - 1) { QS.idx++; renderQ(); } }
+    function prevQ() { if (QS.idx > 0) { QS.idx--; renderQ(); } }
+
+    function confirmSubmit() {
+      const un = QS.questions.length - Object.keys(QS.answers).length;
+      document.getElementById('modal-msg').textContent = un > 0 ? `${un} unanswered question(s). Submit anyway?` : 'Submit now? You cannot change your answers.';
+      document.getElementById('submit-modal').style.display = 'flex';
+    }
+    function closeModal() { document.getElementById('submit-modal').style.display = 'none'; }
+
+    async function submitQuiz() {
+      closeModal();
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>&nbsp;Submitting…';
+      await stopProctor();
+      const payload = QS.questions.map(q => ({ id: q.id, response: QS.answers[q.id] || '' }));
+      try {
+        const r = await api(`${QUIZ_SVC}/quiz/submit/${QS.id}?studentName=${encodeURIComponent(S.username)}`, { method: 'POST', body: JSON.stringify(payload) });
+        const txt = await r.text(), m = txt.match(/\d+/);
+        showResult(m ? parseInt(m[0]) : 0, QS.questions.length);
+      } catch {
+        toast('Submission failed. Try again.', 'error');
+        btn.disabled = false; btn.textContent = 'Submit Quiz';
+      }
+    }
+
+    function showResult(score, total) {
+      document.getElementById('res-score').textContent = score;
+      const pct = total > 0 ? Math.round((score / total) * 100) : 0;
+      document.getElementById('res-msg').textContent = pct >= 80 ? '🎉 Excellent work!' : pct >= 50 ? '👍 Good effort!' : '📚 Keep practicing!';
+      document.getElementById('res-sub').textContent = `You scored ${score} out of ${total} (${pct}%)`;
+      navigate('result');
+    }
+
+    // ── STUDENT REPORTS ──────────────────────────────────────
+    async function loadReports() {
+      const loading = document.getElementById('rep-loading'), empty = document.getElementById('rep-empty'), wrap = document.getElementById('rep-wrap'), tbody = document.getElementById('rep-tbody');
+      loading.style.display = 'flex'; empty.style.display = 'none'; wrap.style.display = 'none';
+      const { ok, body } = await apiJ(`${REPORT}/report/student/${encodeURIComponent(S.username)}`);
+      loading.style.display = 'none';
+      if (!ok || !Array.isArray(body) || !body.length) { empty.style.display = 'block'; return; }
+      tbody.innerHTML = body.map(r => `<tr><td>#${r.quizId}</td><td><span class="chip g">${r.score}</span></td><td>${r.id}</td></tr>`).join('');
+      wrap.style.display = 'block';
+    }
+
+    // ── ADMIN: QUESTIONS ─────────────────────────────────────
+    async function loadAdminQ() {
+      const loading = document.getElementById('qb-loading'), tbody = document.getElementById('qb-tbody');
+      loading.style.display = 'flex'; tbody.innerHTML = '';
+      const { ok, body } = await apiJ(`${QUESTION}/question/allQuestions`);
+      loading.style.display = 'none';
+      if (!ok || !body?.data) { toast('Could not load questions.', 'error'); return; }
+      allQ = body.data; renderQT(allQ);
+    }
+
+    function renderQT(qs) {
+      const tbody = document.getElementById('qb-tbody');
+      if (!qs.length) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:2rem;">No questions.</td></tr>`; return; }
+      tbody.innerHTML = qs.map(q => `<tr>
+    <td><span class="chip">${q.id}</span></td>
+    <td style="max-width:280px;">${esc(q.questionTitle)}</td>
+    <td><span class="chip a">${esc(q.subject)}</span></td>
+    <td>${q.marks}</td>
+    <td><span class="chip ${q.difficultyLevel === 'Easy' ? 'g' : q.difficultyLevel === 'Hard' ? 'r' : 'am'}">${q.difficultyLevel}</span></td>
+    <td><button class="btn btn-danger btn-sm" onclick="delQ(${q.id})">Delete</button></td>
+  </tr>`).join('');
+    }
+
+    function filterQ() { const v = document.getElementById('subj-filter').value.trim().toLowerCase(); renderQT(v ? allQ.filter(q => q.subject.toLowerCase().includes(v)) : allQ); }
+    function toggleAddForm() { const f = document.getElementById('add-form'); f.style.display = f.style.display === 'none' ? 'block' : 'none'; }
+
+    async function addQuestion() {
+      const payload = {
+        questionTitle: document.getElementById('aq-t').value.trim(), subject: document.getElementById('aq-s').value.trim(),
+        marks: parseInt(document.getElementById('aq-m').value) || 1,
+        option1: document.getElementById('aq-o1').value.trim(), option2: document.getElementById('aq-o2').value.trim(),
+        option3: document.getElementById('aq-o3').value.trim(), option4: document.getElementById('aq-o4').value.trim(),
+        rightAnswer: document.getElementById('aq-ans').value.trim(), difficultyLevel: document.getElementById('aq-d').value,
+      };
+      if (!payload.questionTitle || !payload.subject || !payload.option1 || !payload.rightAnswer) { toast('Fill in all required fields.', 'error'); return; }
+      const { ok } = await apiJ(`${QUESTION}/question/add`, { method: 'POST', body: JSON.stringify(payload) });
+      if (ok) { toast('Question added!', 'success'); toggleAddForm(); loadAdminQ(); }
+      else toast('Failed to add question.', 'error');
+    }
+ 
+    async function delQ(id) {
+      if (!confirm('Delete this question?')) return;
+      const { ok } = await apiJ(`${QUESTION}/question/delete/${id}`, { method: 'DELETE' });
+      if (ok) { toast('Deleted.', 'success'); loadAdminQ(); }
+      else toast('Delete failed.', 'error');
+    }
+
+    // ── ADMIN: CREATE QUIZ ────────────────────────────────────
+    async function createQuiz() {
+      const title = document.getElementById('cq-title').value.trim(), subj = document.getElementById('cq-subj').value.trim(), numQ = parseInt(document.getElementById('cq-num').value) || 5;
+      const err = document.getElementById('cq-err'), ok = document.getElementById('cq-ok');
+      err.style.display = 'none'; ok.style.display = 'none';
+      if (!title || !subj) { showErr(err, 'Fill in title and subject.'); return; }
+      const { ok: res, body } = await apiJ(`${QUIZ_SVC}/quiz/create?subject=${encodeURIComponent(subj)}&numQ=${numQ}&title=${encodeURIComponent(title)}`, { method: 'POST' });
+      if (res) { ok.textContent = typeof body === 'string' ? body : 'Quiz created!'; ok.style.display = 'block'; }
+      else showErr(err, 'Failed. Check that enough questions exist for this subject.');
+    }
+
+    // ── AI GENERATOR ──────────────────────────────────────────
+    function dragOver(e) { e.preventDefault(); document.getElementById('upload-zone').classList.add('drag-over'); }
+    function dragLeave() { document.getElementById('upload-zone').classList.remove('drag-over'); }
+    function dropFile(e) { e.preventDefault(); dragLeave(); const f = e.dataTransfer.files[0]; if (f) applyFile(f); }
+    function fileChosen(e) { if (e.target.files[0]) applyFile(e.target.files[0]); }
+    function applyFile(f) {
+      if (!f.name.toLowerCase().endsWith('.pdf')) { toast('Only PDF files are supported.', 'error'); return; }
+      pdfFile = f;
+      const d = document.getElementById('file-display');
+      d.textContent = `📎 ${f.name} (${(f.size / 1024).toFixed(1)} KB)`;
+      d.style.display = 'block';
+    }
+
+    async function generateQuestions() {
+      const err = document.getElementById('gen-err'), ok = document.getElementById('gen-ok'), btn = document.getElementById('gen-btn');
+      const subj = document.getElementById('gen-subj').value.trim(), numQ = parseInt(document.getElementById('gen-num').value) || 5, diff = document.getElementById('gen-diff').value;
+      err.style.display = 'none'; ok.style.display = 'none';
+      if (!pdfFile) { showErr(err, 'Please upload a PDF file first.'); return; }
+      if (!subj) { showErr(err, 'Please enter a subject label.'); return; }
+      btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>&nbsp;Generating…';
+      showLog();
+      logLine('info', `Starting: ${numQ} ${diff} questions on "${subj}" from "${pdfFile.name}"…`);
+
+      const fd = new FormData();
+      fd.append('file', pdfFile); fd.append('course_id', subj); fd.append('question_count', numQ); fd.append('difficulty', diff.toUpperCase());
+
+      try {
+        logLine('info', 'Sending PDF to AI service (this may take a moment)…');
+        const r = await apiUpload(`${GENAI}/mining/questions/from-pdf`, fd);
+        if (!r.ok) {
+          const e = await r.text(); logLine('err', `AI service error: ${e}`);
+          showErr(err, 'AI generation failed. Is the Question Generator service running on port 8010?');
+          btn.disabled = false; btn.textContent = 'Generate & Import Questions'; return;
+        }
+        const result = await r.json();
+        const questions = result.questions || result;
+        if (!Array.isArray(questions) || !questions.length) {
+          logLine('err', 'No questions returned from AI service.');
+          showErr(err, 'No questions were generated. Try a different PDF or increase the count.');
+          btn.disabled = false; btn.textContent = 'Generate & Import Questions'; return;
+        }
+        logLine('ok', `AI generated ${questions.length} questions. Importing to Question Bank…`);
+
+        let imported = 0, failed = 0;
+        for (const q of questions) {
+          const payload = {
+            questionTitle: q.questionTitle || q.question || q.title || '',
+            subject: q.subject || subj,
+            marks: q.marks || 1,
+            option1: q.option1 || (q.options && q.options[0]) || '',
+            option2: q.option2 || (q.options && q.options[1]) || '',
+            option3: q.option3 || (q.options && q.options[2]) || '',
+            option4: q.option4 || (q.options && q.options[3]) || '',
+            rightAnswer: q.rightAnswer || q.correct_answer || q.answer || '',
+            difficultyLevel: q.difficultyLevel || q.difficulty || diff,
+          };
+          const { ok: res } = await apiJ(`${QUESTION}/question/add`, { method: 'POST', body: JSON.stringify(payload) });
+          if (res) { imported++; logLine('ok', `✓ "${payload.questionTitle.substring(0, 55)}…"`); }
+          else { failed++; logLine('err', `✗ Failed: "${payload.questionTitle.substring(0, 50)}…"`); }
+        }
+        ok.textContent = `Done! ${imported} imported${failed > 0 ? `, ${failed} failed` : ''}.`;
+        ok.style.display = 'block';
+        logLine('ok', `Complete: ${imported} imported, ${failed} failed.`);
+        if (imported > 0) loadAdminQ();
+      } catch (e) {
+        logLine('err', `Error: ${e.message}`);
+        showErr(err, 'Could not connect to AI Generator service. Is it running on port 8010?');
+      }
+      btn.disabled = false; btn.textContent = 'Generate & Import Questions';
+    }
+
+    function showLog() { document.getElementById('gen-log-wrap').style.display = 'block'; document.getElementById('gen-log').innerHTML = ''; }
+    function logLine(type, msg) {
+      const el = document.getElementById('gen-log'), d = document.createElement('div');
+      d.className = type === 'ok' ? 'log-ok' : type === 'err' ? 'log-err' : 'log-info';
+      d.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      el.appendChild(d); el.scrollTop = el.scrollHeight;
+    }
+    function clearLog() { document.getElementById('gen-log').innerHTML = ''; document.getElementById('gen-log-wrap').style.display = 'none'; }
+
+    // ── ADMIN: REPORTS ────────────────────────────────────────
+    async function adminReport(type) {
+      const loading = document.getElementById('ar-loading'), empty = document.getElementById('ar-empty'), wrap = document.getElementById('ar-wrap'), tbody = document.getElementById('ar-tbody');
+      loading.style.display = 'flex'; empty.style.display = 'none'; wrap.style.display = 'none';
+      let url;
+      if (type === 'student') {
+        const n = document.getElementById('ar-student').value.trim();
+        if (!n) { toast('Enter a student name.', 'error'); loading.style.display = 'none'; return; }
+        url = `${REPORT}/report/student/${encodeURIComponent(n)}`;
+      } else {
+        const id = document.getElementById('ar-quiz').value.trim();
+        if (!id) { toast('Enter a quiz ID.', 'error'); loading.style.display = 'none'; return; }
+        url = `${REPORT}/report/quiz/${id}`;
+      }
+      const { ok, body } = await apiJ(url);
+      loading.style.display = 'none';
+      if (!ok || !Array.isArray(body) || !body.length) { empty.style.display = 'block'; return; }
+      tbody.innerHTML = body.map(r => `<tr><td>${r.id}</td><td>#${r.quizId}</td><td>${esc(r.studentName)}</td><td><span class="chip g">${r.score}</span></td></tr>`).join('');
+      wrap.style.display = 'block';
+    }
+
+    // ── TABS ─────────────────────────────────────────────────
+    function switchTab(id, el) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById(id).classList.add('active');
+    }
+
+    // ── UTILS ─────────────────────────────────────────────────
+    function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function escA(s) { return String(s || '').replace(/'/g, "\\'"); }
+
+    // ── INIT ──────────────────────────────────────────────────
+    (function () {
+      if (S.token && S.username) navigate(S.role === 'ADMIN' ? 'admin' : 'dashboard');
+      else navigate('login');
+    })();
+  </script>
+</body>
+
+</html>
